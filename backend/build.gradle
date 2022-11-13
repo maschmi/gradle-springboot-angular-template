@@ -1,0 +1,21 @@
+plugins {
+    id 'org.springframework.boot' apply false
+    id 'java'
+}
+
+group = 'de.maschmi.template'
+version = "${appVersion}"
+sourceCompatibility = '17'
+
+allprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation enforcedPlatform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    }
+}
+

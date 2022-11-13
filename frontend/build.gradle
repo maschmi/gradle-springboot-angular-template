@@ -1,0 +1,18 @@
+plugins {
+    id "com.github.node-gradle.node"
+    id "org.openapi.generator"
+}
+
+node {
+    version = "${nodeVersion}"
+    download = true
+    workDir = rootProject.file(".gradle/nodejs")
+
+    npmWorkDir = rootProject.file(".gradle/npm")
+}
+
+apply from: "gradle/angularcli.gradle"
+apply from: "gradle/angularhelper.gradle"
+apply from: "gradle/openapi.gradle"
+
+version = "${appVersion}"

@@ -1,0 +1,36 @@
+openApiGenerate {
+    generatorName =  "spring"
+    inputSpec = "$rootDir/../api/template.frontend.api.yaml"
+    outputDir = "$buildDir/openApiGenerate"
+    modelNameSuffix = "DTO"
+    globalProperties = [
+            supportingFiles : "ApiUtil.java",
+            modelDocs       : "false",
+            models          : "",
+            apis            : ""
+    ]
+    configOptions = [
+            title           : rootProject.name,
+            artifactId      : rootProject.name,
+            reactive        : "true",
+            documentationProvider: "none",
+            apiPackage      : "de.maschmi.template.web.generator",
+            modelPackage    : "de.maschmi.template.web.generator",
+            delegatePattern : "false",
+            interfaceOnly   : "true",
+            useOptional     : "true",
+            useTags         : "true",
+            useBeanValidation: "true",
+            performBeanValidation: "true",
+            serializableModel: "true"]
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += "$buildDir/openApiGenerate/src/main/java"
+        }
+    }
+}
+
+tasks.getByName("compileJava").dependsOn("openApiGenerate")

@@ -1,0 +1,22 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Todo API for cocktails
+servers:
+  - url: http://localhost:8080/api
+paths:
+  /placeholder:
+   get:
+     operationId: getSomething
+     tags:
+       - placeholderQuery
+     description: placeholder
+     responses:
+      "200":
+        description: placeholder
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string

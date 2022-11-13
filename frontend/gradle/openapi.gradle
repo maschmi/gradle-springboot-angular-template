@@ -1,0 +1,13 @@
+openApiGenerate {
+    generatorName =  "typescript-angular"
+    inputSpec = "$rootDir/../api/template.frontend.api.yaml"
+    configOptions = [
+      ngVersion: "${angularVersion}",
+      modelFileSuffix: ".dto",
+      modelSuffix: "DTO"
+    ]
+}
+
+tasks.getByName("build").dependsOn("openApiGenerate")
+tasks.getByName("start").dependsOn("openApiGenerate")
+
