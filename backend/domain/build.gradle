@@ -3,4 +3,8 @@ plugins {
 }
 
 dependencies {
+    api project(":persistence")
+    api project(":domain:example:api")
+
+    implementation project(":domain:example:core")
 }
