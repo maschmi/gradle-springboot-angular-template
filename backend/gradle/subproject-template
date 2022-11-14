@@ -1,5 +1,5 @@
 plugins {
-    id 'de.maschmi.cocktails.java-library-conventions'
+    id 'java-library-conventions'
 }
 
 dependencies {
