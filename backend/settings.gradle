@@ -15,3 +15,5 @@ pluginManagement {
 
 rootProject.name = 'template-backend'
 include('app', 'domain', 'persistence')
+include('domain:example:api', 'domain:example:core')
+include('persistence:inmem')
