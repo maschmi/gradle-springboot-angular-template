@@ -15,3 +15,11 @@ dependencies {
     implementation project(':domain')
     testImplementation 'junit:junit:4.13.1'
 }
+
+sourceSets {
+    test {
+        java {
+            srcDirs += "src/springtest/java"
+        }
+    }
+}
