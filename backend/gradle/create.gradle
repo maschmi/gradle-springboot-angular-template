@@ -1,11 +1,14 @@
 task createSubproject {
+    //adds the task to the Help tasks group
     group = 'Help'
+    //Describes what the task does
     description = "Creates an empty subproject and includes it in the build"
 
+    // Wrapping the 'worker' task does not run the task when e.g. gradle tasks is called
     doLast {
         tasks.create("createSubprojectExec") {
 
-            if (!subPackage) {
+            if (!project.properties.containsKey("subPackage")) {
                 throw new IllegalAccessException("Please supply -PsubPackage=...")
             }
 
@@ -20,13 +23,6 @@ task createSubproject {
             printf("Subproject created\n")
         }
     }
-}
-
-private void includeProjectInBuild() {
-    printf("Adding subproject to settings.gradle\n")
-    var settingsFile = new File('settings.gradle')
-    var projectPath = ':' + subPackage.replace('.', ':')
-    settingsFile.append("\ninclude('${projectPath}')")
 }
 
 private void createDirectoryStructure(String pkgDir) {
@@ -50,4 +46,11 @@ dependencies {
 """
     printf("Creating build.gradle\n")
     new File(subPackage.replace('.', '/'), 'build.gradle').text = buildTemplate
+}
+
+private void includeProjectInBuild() {
+    printf("Adding subproject to settings.gradle\n")
+    var settingsFile = new File('settings.gradle')
+    var projectPath = ':' + subPackage.replace('.', ':')
+    settingsFile.append("\ninclude('${projectPath}')")
 }
