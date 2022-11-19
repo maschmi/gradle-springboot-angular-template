@@ -29,10 +29,19 @@ the project as to the `settings.gradle`.
 
 There are convention plugins in `buildSrc` for `common`, `library` and `application`
 dependencies. `Common` is used to set common dependencies, e.g. `spring-boot-starter` for all
-projects. 
+projects.
 
 Dependency management is realized by using the spring boot `mavenBOM` as `enforcedPlatform` in
 the backend root `build.gralde` as `allprojects` dependency.
+
+### Creating a new subproject
+
+To create a new subproject without to much hassle you can use the `createSubProject` task in the
+backend project. You must supply `-PsubPackage=...` where `...`is e.g. `domain.newDomain`. This will
+create the needed directory structure and includes the subproject in the backend build. By default, a
+`build.gradle` with only the `java-library-conventions` plugin applied is created.
+
+Please see `gradle/create.gradle` for details.
 
 # How to get started
 
