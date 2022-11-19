@@ -1,0 +1,53 @@
+task createSubproject {
+    group = 'Help'
+    description = "Creates an empty subproject and includes it in the build"
+
+    doLast {
+        tasks.create("createSubprojectExec") {
+
+            if (!subPackage) {
+                throw new IllegalAccessException("Please supply -PsubPackage=...")
+            }
+
+            printf("Creating subproject ${subPackage}\n")
+            String pkgName = project.property("group") + '.' + subPackage
+            String pkgDir = pkgName.replace('.', '/')
+
+            createDirectoryStructure(pkgDir)
+            createBuildFile(subPackage)
+
+            includeProjectInBuild()
+            printf("Subproject created\n")
+        }
+    }
+}
+
+private void includeProjectInBuild() {
+    printf("Adding subproject to settings.gradle\n")
+    var settingsFile = new File('settings.gradle')
+    var projectPath = ':' + subPackage.replace('.', ':')
+    settingsFile.append("\ninclude('${projectPath}')")
+}
+
+private void createDirectoryStructure(String pkgDir) {
+    def subDirName = subPackage.replace('.', '/')
+    printf("Creating directory ${subDirName}\n")
+    mkdir subDirName
+
+    printf("Creating src folders for ${pkgDir}\n")
+    mkdir "${subDirName}/src/main/java/${pkgDir}"
+    mkdir "${subDirName}/src/test/java/${pkgDir}"
+}
+
+private void createBuildFile(subPackage) {
+    def buildTemplate = """
+plugins {
+    id 'java-library-conventions'
+}
+
+dependencies {
+}
+"""
+    printf("Creating build.gradle\n")
+    new File(subPackage.replace('.', '/'), 'build.gradle').text = buildTemplate
+}
