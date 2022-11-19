@@ -6,6 +6,7 @@ plugins {
 group = 'de.maschmi.template'
 version = "${appVersion}"
 sourceCompatibility = '17'
+apply from: "gradle/create.gradle"
 
 allprojects {
     apply plugin: 'java'
