@@ -1,28 +1,42 @@
-def findNgScript() {
-    def nodeSubDir = new File("${project.rootDir}/.gradle/nodejs")
-      .listFiles()
-    def nodeDir = nodeSubDir.find {it.name.contains("node-v${nodeVersion}")}
-    return file("${nodeDir}/lib/node_modules/@angular/cli/bin/ng.js")
-}
-
 tasks.register("installNg", NpmTask) {
   args = ["install", "-g", "@angular/cli@${angularVersion}"]
 }
 
-tasks.register("ngCreateApp", NodeTask) {
-  script = findNgScript()
-  args = ["new", "--skip-git", "--routing", "--style=scss", "--directory=.", "frontend"]
+tasks.register("ngCreateApp") {
+    doLast {
+        tasks.create("ngCreateAppWorker", NodeTask) {
+            def appDir = "app"
+            if (project.properties.containsKey("directory")) {
+                appDir = directory
+            }
+            script = findNgScript()
+            args = ["new", "--skip-git", "--routing", "--style=scss", "--directory=${appDir}", "frontend"]
+        }
+    }
 }
 
-tasks.register("disableAnalytics", NodeTask) {
-  script = findNgScript()
-  args = ["analytics", "disable"]
+tasks.register("disableAnalytics") {
+    doLast {
+        tasks.create("disableAnalyticsWorker", NodeTask) {
+            script = findNgScript()
+            args = ["analytics", "disable"]
+        }
+    }
 }
 
 tasks.register("initFrontend") {
-  dependsOn("installNg")
-  dependsOn("ngCreateApp")
-  dependsOn("disableAnalytics")
-  tasks.findByName("ngCreateApp").mustRunAfter("installNg")
-  tasks.findByName("disableAnalytics").mustRunAfter("ngCreateApp")
+    group("Build setup")
+    dependsOn("installNg")
+    dependsOn("ngCreateApp")
+    dependsOn("disableAnalytics")
+    tasks.findByName("ngCreateApp").mustRunAfter("installNg")
+    tasks.findByName("disableAnalytics").mustRunAfter("ngCreateApp")
+}
+
+private File findNgScript() {
+    println("Finding ng...")
+    def nodeSubDir = new File("${project.rootDir}/.gradle/nodejs")
+            .listFiles()
+    def nodeDir = nodeSubDir.find { it.name.contains("node-v${nodeVersion}") }
+    return file("${nodeDir}/lib/node_modules/@angular/cli/bin/ng.js")
 }
