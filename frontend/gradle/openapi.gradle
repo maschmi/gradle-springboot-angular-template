@@ -1,13 +1,24 @@
+apply from: 'gradle/helper.gradle'
+
 openApiGenerate {
-    generatorName =  "typescript-angular"
+    generatorName = "typescript-angular"
     inputSpec = "$rootDir/../api/template.frontend.api.yaml"
+    outputDir = apiOutputDir()
     configOptions = [
-      ngVersion: "${angularVersion}",
-      modelFileSuffix: ".dto",
-      modelSuffix: "DTO"
+            ngVersion      : "${angularVersion}",
+            modelFileSuffix: ".dto",
+            modelSuffix    : "DTO"
     ]
 }
 
 tasks.getByName("build").dependsOn("openApiGenerate")
 tasks.getByName("start").dependsOn("openApiGenerate")
 
+tasks.register("cleanApi") {
+    group("Openapi tools")
+    delete(file(apiOutputDir()))
+}
+
+private String apiOutputDir() {
+    "$rootDir/${getAppDir()}/src/apigen"
+}

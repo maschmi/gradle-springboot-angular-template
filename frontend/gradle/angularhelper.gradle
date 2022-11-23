@@ -1,20 +1,32 @@
+apply from: 'gradle/helper.gradle'
+
+tasks.withType(NpmTask).configureEach() {
+  workingDir = file("./" + getAppDir())
+}
+
 tasks.register("start", NpmTask) {
+  group("angular")
   dependsOn("npm_install")
   args = ["start"]
 }
 
 tasks.register("test", NpmTask) {
+  group("verification")
   dependsOn("npm_install")
   args = ["test"]
 }
 
 tasks.register("setVersion", NpmTask) {
+  group("release")
   args = ["version", "--allow-same-version", version]
 }
 
 tasks.register("build", NpmTask) {
+  group("release")
   dependsOn("setVersion")
   dependsOn("npm_ci")
   tasks.findByName("setVersion").mustRunAfter("npm_ci")
   args = ["run", "build", "-c", "production"]
 }
+
+

@@ -1,0 +1,15 @@
+ext.getAppDir = {
+    def appDir = "."
+    if (project.hasProperty("appDirectory")) {
+        appDir = property("appDirectory")
+    }
+    appDir
+}
+
+ext.getAppName = {
+    def applicationName = "frontend"
+    if (project.hasProperty("appName")) {
+        applicationName = property("appName")
+    }
+    applicationName
+}

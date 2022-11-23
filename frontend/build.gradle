@@ -16,3 +16,9 @@ apply from: "gradle/angularhelper.gradle"
 apply from: "gradle/openapi.gradle"
 
 version = "${appVersion}"
+
+
+tasks.register("clean") {
+    group("build setup")
+    dependsOn tasks.findByName("cleanApi")
+}

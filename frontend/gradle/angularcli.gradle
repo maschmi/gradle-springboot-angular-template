@@ -1,37 +1,38 @@
-tasks.register("installNg", NpmTask) {
-  args = ["install", "-g", "@angular/cli@${angularVersion}"]
+apply from: 'gradle/helper.gradle'
+
+tasks.register("installAngular", NpmTask) {
+    group = "Angular"
+    description = "Installs Angular"
+    dependsOn "nodeSetup"
+    args = ["install", "-g", "@angular/cli@${angularVersion}"]
 }
 
-tasks.register("ngCreateApp") {
-    doLast {
-        tasks.create("ngCreateAppWorker", NodeTask) {
-            def appDir = "app"
-            if (project.properties.containsKey("directory")) {
-                appDir = directory
-            }
-            script = findNgScript()
-            args = ["new", "--skip-git", "--routing", "--style=scss", "--directory=${appDir}", "frontend"]
-        }
-    }
+def ngCreate = tasks.register("createAngularApp", NodeTask) {
+    group = "Angular"
+    description = "Creates a new angular app"
+    def appDir = getAppDir()
+    def applicationName = getAppName()
+    script = findNgScript()
+    args = ["new", "--skip-git", "--routing", "--style=scss", "--directory=${appDir}", applicationName]
 }
 
-tasks.register("disableAnalytics") {
-    doLast {
-        tasks.create("disableAnalyticsWorker", NodeTask) {
-            script = findNgScript()
-            args = ["analytics", "disable"]
-        }
-    }
+def disableAnalytics = tasks.register("disableAnalytics", NodeTask) {
+    group = "Angular"
+    description = "Disables Angular Analytics"
+    script = findNgScript()
+    def appDir = getAppDir()
+    workingDir = file("./" + appDir)
+    args = ["analytics", "disable"]
 }
 
-tasks.register("initFrontend") {
-    group("Build setup")
-    dependsOn("installNg")
-    dependsOn("ngCreateApp")
-    dependsOn("disableAnalytics")
-    tasks.findByName("ngCreateApp").mustRunAfter("installNg")
-    tasks.findByName("disableAnalytics").mustRunAfter("ngCreateApp")
+tasks.register("setupAngularApp") {
+    group = "Angular"
+    description = "Creates a new Angular App and disables analytics"
+    dependsOn ngCreate
+    dependsOn disableAnalytics
+    tasks.findByName("disableAnalytics").mustRunAfter(ngCreate)
 }
+
 
 private File findNgScript() {
     println("Finding ng...")
@@ -40,3 +41,4 @@ private File findNgScript() {
     def nodeDir = nodeSubDir.find { it.name.contains("node-v${nodeVersion}") }
     return file("${nodeDir}/lib/node_modules/@angular/cli/bin/ng.js")
 }
+
